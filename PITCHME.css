@@ -66,9 +66,16 @@ small {
   opacity: 0.5;
 }
 
+.reveal code,
 .reveal code > pre {
   font-family: "Source Code Pro", 'Droid Sans Mono', 'monospace';
-  box-shadow: none;
+  box-shadow: none !important;
+}
+
+section pre {
+  box-shadow: none !important;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .twocol code > pre {
@@ -84,24 +91,24 @@ small {
 }
 
 .twocol code:first-child > pre {
-  top: 0;
+  /* top: 0; */
   left: -15vw;
 }
 
 .twocol code:last-child > pre{
-  top: 0;
+  /* top: 0; */
   left: 35vw;
 }
 
 
 .blue,
-.fragment.highlight-blue,
+.fragment.highlight-blue.visible,
 .fragment.highlight-current-blue.current-fragment {
   color: #0076ee !important;
 }
 
 .pink,
-.fragment.highlight-red,
+.fragment.highlight-red.visible,
 .fragment.highlight-current-red.current-fragment {
   color: #ff42b1 !important;
 }
@@ -111,7 +118,7 @@ small {
 }
 
 .green,
-.fragment.highlight-green,
+.fragment.highlight-green.visible,
 .fragment.highlight-current-green.current-fragment {
   color: #00a900 !important;
 }

@@ -25,7 +25,7 @@ sei0o inoue
       <li>sei0o inoue ([@sei0o](http://twitter.com/sei0o))</li>
       <li>明石高専 2E</li>
       <li>[o0i.es](http://o0i.es)</li>
-      <li>Rubyとか なんかいろいろ 広く浅く</li>
+      <li>RubyとかCTFとか広く浅く</li>
       <li>春休みは遊んでました</li>
   </div>
 </div>
@@ -54,14 +54,14 @@ sei0o inoue
 
 ---
 
-## What is 中間言語？
+## What is 中間言語？- ここではIR (Intermediate Representation)やバイトコードも含めちゃいます
 
 - ソースコードを機械語にコンパイルする際に間に挟む言語
 - ここではIR (Intermediate Representation)やバイトコードも含めちゃいます
 
 ---
 
-図(バイナリ(->アセンブラ)->中間言語->プログラミング言語)
+![](assets/execution_process.png)
 
 ---
 
@@ -101,27 +101,35 @@ sub esp, 0x40
 ---
 
 ## 静的単一代入 (SSA)
-```
-  a = b + 3
-  a = a * b
-  print(a)
-```
+- 各変数への代入は1回→依存関係が明快に
+- Φ (phi) 関数という考え方
 
-↓
-
-```
-  a1 = b1 + 3
-  a2 = a1 * b1
-  print(a2)
-```
+<div class="twocol" style="font-size: 130%">
+  <code><pre>
+a = x + y
+if (a > 2) {
+  a = a - 2
+} else {
+  a = a + 3
+}
+print(a)
+  </pre></code>
+  <code><pre>
+a1 = x1 + y1
+if (a1 > 2) {
+  <span class="fragment highlight-red" data-fragment-index="1">a2 = a1 - 2 <span class="fragment" data-fragment-index="1">(#1)</span></span>
+} else {
+  <span class="fragment highlight-blue" data-fragment-index="1">a3 = a1 + 3 <span class="fragment" data-fragment-index="1">(#2)</span></span>
+}
+<span class="fragment" data-fragment-index="2">a4 = φ(<span class="pink">#1 -> a2</span>, <span class="blue">#2 -> a3</span>)</span>
+print(<span class="fragment" data-fragment-index="2">a4</span>)
+  </pre></code>
+</div>  
 
 ---
 
-図(SSAグラフ)
-
----
-
-図(AST vs SSA; 'common subexpression elimination')
+<img src="assets/Selection_019.png" style="height:80vh">
+<small>[Generating Better Machine Code with SSA](https://about.sourcegraph.com/go/generating-better-machine-code-with-ssa/)より引用</small>
 
 ---
 
@@ -424,13 +432,116 @@ declare i32 @printf(i8\*, ...) #1</span>
 
 ---
 
+### Swift → raw SIL
+
+<div class="twocol">
+  <code><pre style="width:30vw">
+print("Hello!")
+
+// 生成方法
+// $ swiftc -emit-silgen hello.swift -o hello-raw.sil
+
+// 57行
+  </pre></code>
+  <code><pre style="width: 70vw; left: 20vw;">
+<span class="fragment highlight-green" data-fragment-index="6">// %7, %12: 確保したメモリ領域(雑)
+%12</span> = init_existential_addr %11 : $\*Any, $String
+<span class="orange">%13</span> = string_literal utf8 <span class="green">"Hello!"</span>
+<span class="orange">%14</span> = integer_literal $Builtin.Word, 6
+<span class="orange">%15</span> = integer_literal $Builtin.Int1, -1
+<span class="orange">%16</span> = metatype $@thin String.Type
+
+// function\_ref <span class="fragment highlight-red" data-fragment-index="1">String.init(_builtinStringLiteral:utf8CodeUnitCount:isASCII:)</span>
+%17 = <span class="orange">function_ref</span> @\_T0S2SBp21<span class="fragment highlight-red" data-fragment-index="2">\_builtinStringLiteral</span>\_Bw17<span class="fragment highlight-red"  data-fragment-index="2">utf8CodeUnitCount</span>Bi1_7is<span class="fragment highlight-red" data-fragment-index="2">ASCII</span>tcfC
+  <span class="fragment highlight-blue" data-fragment-index="4">: $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type)
+  <span class="fragment highlight-blue" data-fragment-index="3">-> @owned String</span></span>
+%18 = <span class="orange">apply %17(%13, %14, %15, %16)</span>
+  <span class="fragment highlight-blue" data-fragment-index="5">: $@convention(method) (Builtin.RawPointer, Builtin.Word, Builtin.Int1, @thin String.Type)
+  -> @owned String</span>
+store %18 to [init] <span class="fragment highlight-green" data-fragment-index="6">%12</span> : $*String
+  </pre></code>
+</div>
+
+---
+
+### Swift → raw SIL
+
+<div class="twocol">
+  <code><pre style="width:30vw">
+print("Hello!")
+  </pre></code>
+  <code><pre style="width: 70vw; left: 20vw;">
+// function\_ref <span class="fragment highlight-red" data-fragment-index="1">print(_:separator:terminator:)</span>
+%24 = <span class="orange">function_ref</span> @\_T0s5<span class="fragment highlight-red" data-fragment-index="1">print</span>yypd_SS9<span class="fragment highlight-red" data-fragment-index="1">separator</span>SS10<span class="fragment highlight-red" data-fragment-index="1">terminator</span>tF
+  <span class="fragment highlight-blue" data-fragment-index="2">: $@convention(thin) (@owned Array&lt;Any&gt;, @owned String, @owned String)
+  -> ()</span>
+%25 = <span class="orange">apply %24(%7, %21, %23)</span>
+  <span class="fragment highlight-blue" data-fragment-index="2">: $@convention(thin) (@owned Array&lt;Any&gt;, @owned String, @owned String)
+  -> ()</span>
+
+%26 = integer_literal $Builtin.Int32, 0
+%27 = struct $Int32 (%26 : $Builtin.Int32) 
+<span class="fragment highlight-red" data-fragment-index="3">return %27 : $Int32</span>
+  </pre></code>
+</div>
+
+
+---
+
+### raw SIL → Canonical SIL
+- さらなる最適化
+- 350行程度に
+- String.initの呼び出し→直接StringCoreを作成
+
+<div>
+  <code><pre style="position:absolute; left: -10px;">
+%16 = init_existential_addr %15 : $\*Any, $String
+
+%17 = string_literal utf8 <span class="green">"Hello!"</span>
+%18 = struct $UnsafeMutableRawPointer (%17 : $Builtin.RawPointer)
+%19 = enum $Optional<UnsafeMutableRawPointer>, #Optional.some!enumelt.1, %18 : $UnsafeMutableRawPointer
+%20 = integer_literal $Builtin.Int64, 6
+%21 = enum $Optional<AnyObject>, #Optional.none!enumelt
+%22 = struct $UInt (%20 : $Builtin.Int64)
+%23 = <span class="pink">struct $_StringCore</span> (%19 : $Optional<UnsafeMutableRawPointer>, %22 : $UInt, %21 : $Optional<AnyObject>)
+%24 = <span class="pink">struct $String</span> (%23 : $_StringCore)
+
+store %24 to %16 : $*String
+  </pre></code>
+</div>
+
+---
+
+### Canonical SIL → LLVM IR
+- 140行程度
+- わかりません たすけて
+
+<div>
+  <code><pre>
+// $ swiftc -O -emit-ir hello.swift -o hello.ll
+
+%35 = call swiftcc { i64, i64, i64 } @\_T0s5<span class="pink">print</span>yypd\_SS9<span class="pink">separator</span>SS10<span class="pink">terminator</span>FfA0\_()
+%36 = extractvalue { i64, i64, i64 } %35, 0
+%37 = extractvalue { i64, i64, i64 } %35, 1
+%38 = extractvalue { i64, i64, i64 } %35, 2
+%39 = call swiftcc { i64, i64, i64 } @\_T0s5<span class="pink">print</span>yypd\_SS9<span class="pink">separator</span>SS10<span class="pink">terminator</span>FfA1\_()
+%40 = extractvalue { i64, i64, i64 } %39, 0
+%41 = extractvalue { i64, i64, i64 } %39, 1
+%42 = extractvalue { i64, i64, i64 } %39, 2
+call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pink">separator</span>SS10<span class="pink" >terminator</span>F(%Ts27_ContiguousArrayStorageBaseC* %26, i64 %36, i64 %37, i64 %38, i64 %40, i64 %41, i64 %42)
+<em>ret i32 0</em>
+  </pre></code>
+</div>
+
+---
+
 ## GCC (C)
 - [?](ftp://gcc.gnu.org/pub/gcc/summit/2003/Tree%20SSA%20-%20A%20New%20optimization%20infrastructure.pdf)
 - [GCC internals](https://gcc.gnu.org/onlinedocs/gccint/index.html#Top)
 
 ---
 
-## BEAM (Erlang/Elixir)
+## BEAM (Erlang, Elixir)
 - 並列処理が得意
 - "Let it crash"
 
@@ -461,20 +572,33 @@ declare i32 @printf(i8\*, ...) #1</span>
 ## まとめ
 - 中間言語は楽しい!!
 - コンパイラは案外読める!!
+  - 書ける...?
 - 工夫がすごい!!
-
 
 ---
 
 ## 参考資料
-- [Static Single Assignment for Decompilation](https://yurichev.com/mirrors/vanEmmerik_ssa.pdf)
+- SSA
+  - [静的単一代入最適化部](http://www.is.titech.ac.jp/~sassa/coins-www-ssa/japanese/)
+    - なぜか東工大の文書がよく引っかかる
+  - [Static Single Assignment for Decompilation](https://yurichev.com/mirrors/vanEmmerik_ssa.pdf)
 - LLVM
   - [LLVMを始めよう！ 〜 LLVM IRの基礎はclangが教えてくれた・Brainf**kコンパイラを作ってみよう 〜](https://itchyny.hatenablog.com/entry/2017/02/27/100000)
   - [Kaleidoscope](https://llvm.org/docs/tutorial/) コンパイラ自作のチュートリアル
   - [LLVM Language Reference Manual](https://llvm.org/docs/LangRef.html)
+- SIL
+  - 作成時はSwift 4.1が最新です
+  - [Swift中間言語の、ひとまず入り口手前まで](https://qiita.com/es_kumagai/items/b0b123526329909ae2a2)
+    - Swift 3だが、サクっと読める
+  - [Swiftの中間言語SILを読む](https://blog.waft.me/2018/01/09/swift-sil-1/)
+    - 2018年になってからなので結構新しい
+  - [GitHub: swift/docs/SIL.rst](https://github.com/apple/swift/blob/master/docs/SIL.rst)
+  - [新しい予約語がやってくる 「Swift5のOwnershipに備える」 #tryswiftconf](https://dev.classmethod.jp/event/try-swift-2018-ownership-on-swift5/)
+    - Swiftは開発が速い
 
 ---
 
 <!-- .slide: class="center" -->
 おしまい  
-<small>Powered by Reveal.js</small>
+- [ソースコードも読んで]()
+  - Swiftはめっちゃ省いてます
