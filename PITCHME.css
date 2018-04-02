@@ -1,0 +1,117 @@
+@import "https://fonts.googleapis.com/earlyaccess/roundedmplus1c.css";
+
+body, li, section {
+  font-family: 'Rounded Mplus 1c', 'Helvetica Neue', 'Helvetica', 'Arial', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', 'ＭＳ\ Ｐゴシック', 'MS PGothic', sans-serif !important;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-family: 'Rounded Mplus 1c', 'Helvetica Neue', 'Helvetica', 'Arial', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', 'ＭＳ\ Ｐゴシック', 'MS PGothic', sans-serif;
+  line-height: 0.9em;
+  text-transform: none;
+  text-shadow: none;
+}
+
+.reveal section img{
+  border: 0;
+  box-shadow: none;
+  background: none;
+}
+
+.reveal p {
+  text-align: left;
+}
+
+.reveal ul {
+  display: block;
+}
+.reveal ol {
+  display: block;
+}
+
+.reveal .center p {
+  text-align: center !important;
+}
+
+.reveal .twocol {
+  display: flex;
+}
+
+.reveal .twocol div {
+  margin-right: 10px;
+}
+
+li {
+  list-style: none;
+}
+
+li::before {
+  content: "●";
+  font-size: 10px;
+  vertical-align: middle;
+  margin-right: 20px;
+}
+
+em {
+  font-size: 120% !important;
+  font-weight: bold !important;
+  color: #0ac;
+}
+
+small {
+  opacity: 0.5;
+}
+
+.reveal code > pre {
+  font-family: "Source Code Pro", 'Droid Sans Mono', 'monospace';
+  box-shadow: none;
+}
+
+.twocol code > pre {
+  width: 50vw;
+  white-space: pre-wrap;
+  word-break: break-all;
+  position: absolute;
+  opacity: 0.9;
+}
+
+.twocol code > pre span {
+  opacity: 1;
+}
+
+.twocol code:first-child > pre {
+  top: 0;
+  left: -15vw;
+}
+
+.twocol code:last-child > pre{
+  top: 0;
+  left: 35vw;
+}
+
+
+.blue,
+.fragment.highlight-blue,
+.fragment.highlight-current-blue.current-fragment {
+  color: #0076ee !important;
+}
+
+.pink,
+.fragment.highlight-red,
+.fragment.highlight-current-red.current-fragment {
+  color: #ff42b1 !important;
+}
+
+.orange {
+  color: #e28100;
+}
+
+.green,
+.fragment.highlight-green,
+.fragment.highlight-current-green.current-fragment {
+  color: #00a900 !important;
+}
