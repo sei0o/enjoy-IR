@@ -8,7 +8,7 @@ separatorVertical: "^\n--\n$"
 ---
 
 <!-- .slide: class="center" -->
-# エンジョイ中間言語
+# ノリで読む中間言語
 
 sei0o inoue
 
@@ -26,7 +26,7 @@ sei0o inoue
       <li>明石高専 2E</li>
       <li>[o0i.es](http://o0i.es)</li>
       <li>RubyとかCTFとか広く浅く</li>
-      <li>春休みは遊んでました</li>
+      <li>春休みは遊んでました！w</li>
   </div>
 </div>
 
@@ -34,19 +34,20 @@ sei0o inoue
 
 ## Agenda
 
-- VMについて
+- 最近の処理系
 - What is 中間言語?
 - Why use 中間言語?
-- ちょろちょろっと概念
+- 基礎知識
 - 読んでみる!
 
 ---
 
-## VMについて
+## 最近の処理系
 - コンパイル言語・スクリプト言語
 - 分け方の一つであって、実装はどちらでもよい
-- Ruby → YARV
-- PHP → HHVM (Hack)
+- VM
+  - Ruby → YARV
+  - PHP → HHVM (Hack)
 
 ---
 
@@ -54,7 +55,7 @@ sei0o inoue
 
 ---
 
-## What is 中間言語？- ここではIR (Intermediate Representation)やバイトコードも含めちゃいます
+## What is 中間言語？
 
 - ソースコードを機械語にコンパイルする際に間に挟む言語
 - ここではIR (Intermediate Representation)やバイトコードも含めちゃいます
@@ -138,7 +139,7 @@ print(<span class="fragment" data-fragment-index="2">a4</span>)
 - 言語の解説
 - 実行までの道のり
 - ソースコードと中間言語/バイトコードの比較
-- ノリで読んでます
+- ノリ・気合・Google
 
 ---
 
@@ -217,7 +218,92 @@ class <span class="blue">MainClass</span> {
 
 ---
 
+<div class="twocol">
+  <code><pre style="width: 35vw">
+public class HelloTest {
+  public static void main() {
+    <span class="pink">System.out</span>.<span class="blue">println</span>(<span class="green">"Hello!"</span>);
+  }
+}
 
+// 生成方法
+// $ javac HelloTest.java
+// $ javap -v HelloTest.class >> HelloTest_bytecode.txt
+  </pre></code>
+  <code><pre style="width: 65vw; margin-left: -10vw;">
+Constant pool:
+  <span class="orange">#1 = Methodref #6.#14
+    // java/lang/Object."&lt;init&gt;":()V
+    // コンストラクタ</span>
+  <span class="fragment highlight-red" data-fragment-index="4">#2 = Fieldref #15.#16</span>
+  <span class="fragment highlight-green" data-fragment-index="1">#3 = String #17</span>
+  <span class="fragment highlight-blue" data-fragment-index="7">#4 = Methodref #18.#19
+    <span class="fragment blue" data-fragment-index="7">// java/io/PrintStream.println:(Ljava/lang/String;)V
+    // (L java/lang/String;)V → Stringを受け取ってVoidを返す？</span></span>
+  #11 = Utf8 main
+  <span class="fragment highlight-red" data-fragment-index="3">#15 = Class #22 <span class="fragment pink" data-fragment-index="3">// System</span>
+  #16 = NameAndType #23:#24 <span class="fragment pink" data-fragment-index="3">// out:Ljava/io/PrintStream;
+    // System.outはPrintStreamのインスタンス？</span></span>
+  <span class="green">#17 = Utf8 Hello!</span>
+  <span class="fragment highlight-blue" data-fragment-index="8">#18 = Class #25</span>
+  <span class="fragment highlight-blue" data-fragment-index="6">#19 = NameAndType #26:#27 <span class="fragment blue" data-fragment-index="6">// println:(Ljava/lang/String;)V</span></span>
+  #20 = Utf8 HelloTest
+  <span class="fragment highlight-red" data-fragment-index="2">#22 = Utf8 java/lang/System
+  #23 = Utf8 out</span>
+  <span class="fragment highlight-red" data-fragment-index="3">#24 = Utf8 Ljava/io/PrintStream;</span>
+  <span class="fragment highlight-blue" data-fragment-index="9">#25 = Utf8 java/io/PrintStream</span>
+  <span class="fragment highlight-blue" data-fragment-index="5">#26 = Utf8 println</span>
+  <span class="fragment highlight-blue" data-fragment-index="6">#27 = Utf8 (Ljava/lang/String;)V</span>
+  </pre></code>
+</div>
+
+---
+
+<div class="twocol">
+  <code><pre style="width: 30vw;">
+<span class="orange">#1 = コンストラクタ</span>
+#2 = Fieldref System.out
+#3 = String "Hello!"
+#4 = Methodref
+  PrintStream.println
+  </pre></code>
+  <code><pre style="width: 70vw; margin-left: -20vw;">
+public HelloTest();
+  descriptor: ()V
+  Code:
+    stack=1, locals=1, args_size=1
+        0: aload_0
+        1: <span class="orange">invokespecial #1</span>
+        4: return
+    LineNumberTable:
+      line 1: 0
+
+public static void main();
+  descriptor: ()V
+  Code:
+    stack=2, locals=0, args_size=0
+        0: <span class="fragment highlight-current-red">getstatic     #2</span>
+        3: <span class="fragment highlight-current-red">ldc           #3</span>
+        5: <span class="fragment highlight-current-red">invokevirtual #4</span>
+        8: <span class="fragment highlight-current-red">return</span>
+  </pre></code>
+</div>
+
+---
+
+### ちなみに
+- バイトコードを含んだ`.class`ファイルをバイナリエディタで見ると...
+
+<code>
+<pre>
+  Offset: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 	
+00000000: <span class="fragment highlight-red">CA FE BA BE</span> 00 00 00 35 00 1C 0A 00 06 00 0E 09
+</pre>
+</code>
+
+<div class="fragment">
+![](assets/translated.png)
+</div>
 
 ---
 
@@ -244,16 +330,40 @@ class <span class="blue">MainClass</span> {
 
 ---
 
-### 比較
-```bash
-$ GOSSAFUNC=main go build
-```
+### コンパイル
+
+- `$ GOSSAFUNC=main go build`
+- なんかいろいろ生成してくれる
+
+![](assets/go_ssa.png)
 
 ---
 
-### 最適化の例
-- [generic.rules](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/gen/generic.rules) (1200行ぐらい)
-- コメントがていねい→**読める!**
+### 最適化の全体像
+
+- [compile.go](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/compile.go#L331)からスタート
+- 43ステップ
+
+```
+{name: "early phielim", fn: phielim},
+{name: "early copyelim", fn: copyelim},
+{name: "early deadcode", fn: deadcode}, 
+{name: "short circuit", fn: shortcircuit},
+{name: "decompose user", fn: decomposeUser, required: true},
+{name: "opt", fn: opt, required: true},
+{name: "zero arg cse", fn: zcse, required: true},
+{name: "opt deadcode", fn: deadcode, required: true},
+{name: "generic cse", fn: cse},
+{name: "phiopt", fn: phiopt},
+{name: "nilcheckelim", fn: nilcheckelim},
+{name: "prove", fn: prove},
+...
+```
+---
+
+### 最適化の例: opt
+- [opt](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/opt.go) ステップから呼び出される[generic.rules](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/gen/generic.rules) (1200行ぐらい)
+  - 実際はこの内容がGoのコードに変換されている(30000行)
 
 ```
 // Convert x * 1 to x.
@@ -340,9 +450,33 @@ $ GOSSAFUNC=main go build
 // We must have x * delta / 2^e < 1/
 ```
 
-- つらそう
 - よく見るとただの式変形
 - 本題とはずれるので説明はしません
+
+---
+
+### 最適化の例: Dead Code Elimination
+
+- 絶対に実行されないコードを取り除く
+
+```go
+func main() {
+	x := 3
+
+	if x > 10 { 
+		fmt.Printf("X is greater than 10") // dead code
+	}
+}
+```
+
+---
+
+### 最適化の例: Dead Code Elimination
+- [deadcode.go](https://github.com/golang/go/blob/master/src/cmd/compile/internal/ssa/deadcode.go)
+- コメントがていねい→**読める!**
+  - 先頭のブロックから
+- この例ではgeneric.rulesで自明な条件分岐を書き換えた後、DCEでいらない部分を除去している(→合わせ技！)
+  - BlockIf → BlockFirst
 
 ---
 
@@ -351,6 +485,30 @@ $ GOSSAFUNC=main go build
   - x86
   - ARM
   - MIPS
+
+---
+
+<!-- golang SSA BlockIf -->
+<!-- Func, Block(Preds, Succs), Value, OpGreaterなどの簡単な説明 -->
+
+---
+
+<!-- opt: BlockFirstに変える -->
+
+---
+
+<!-- deadcode: reachable blocksをDFSで求め、 Live valuesをなんとかして（調べる）見つける、
+
+- live values
+  - Block.Control (Value) ならばlive
+    - // A value that determines how the block is exited. (block.go)
+  - Value.Opがcall / hasSideEffects ならばlive
+  - Value.TypeがVoidならばlive ←　なぜ？
+    - // The only Void ops are nil checks.  We must keep these.
+    - nil checkはどこで生成される？（おそらくif val != nilのことではない)
+  - Value.Op == OpPhiのとき、すべてのArgs(Value型) = ブロックのPredsがun-reachableのとき、Valueを削除する
+
+dead codeの除去, transitive closureを求めるのにwarshall-floydが使える話 -->
 
 ---
 
@@ -541,14 +699,6 @@ call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pin
 
 ---
 
-## BEAM (Erlang, Elixir)
-- 並列処理が得意
-- "Let it crash"
-
-- Elixirはいいぞ
-
----
-
 ## V8 (JavaScript)
 - Chromeに積まれている
 - Ignition
@@ -582,6 +732,10 @@ call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pin
   - [静的単一代入最適化部](http://www.is.titech.ac.jp/~sassa/coins-www-ssa/japanese/)
     - なぜか東工大の文書がよく引っかかる
   - [Static Single Assignment for Decompilation](https://yurichev.com/mirrors/vanEmmerik_ssa.pdf)
+- Go
+  - []
+- JVM
+  - [JVM performance optimization | JavaWorld](https://www.javaworld.com/article/2078623/core-java/jvm-performance-optimization-part-1-a-jvm-technology-primer.html)
 - LLVM
   - [LLVMを始めよう！ 〜 LLVM IRの基礎はclangが教えてくれた・Brainf**kコンパイラを作ってみよう 〜](https://itchyny.hatenablog.com/entry/2017/02/27/100000)
   - [Kaleidoscope](https://llvm.org/docs/tutorial/) コンパイラ自作のチュートリアル
@@ -595,6 +749,13 @@ call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pin
   - [GitHub: swift/docs/SIL.rst](https://github.com/apple/swift/blob/master/docs/SIL.rst)
   - [新しい予約語がやってくる 「Swift5のOwnershipに備える」 #tryswiftconf](https://dev.classmethod.jp/event/try-swift-2018-ownership-on-swift5/)
     - Swiftは開発が速い
+- ChakraCore
+  - [Chakra JIT CFP Bypass](http://theori.io/research/chakra-jit-cfg-bypass)
+- BEAM
+  - [A peak into the Erlang compiler and BEAM bytecode](http://gomoripeti.github.io/beam_by_example/)
+- Rust
+  - MIR/HIR
+  - [Introducing MIR](https://blog.rust-lang.org/2016/04/19/MIR.html)
 
 ---
 

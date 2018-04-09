@@ -1,0 +1,755 @@
+# _/home/sei0o/Documents/IR-Slide/samples/go
+generating SSA for main
+buildssa-enter
+buildssa-body
+.   CALLFUNC u(100) l(8) tc(1) STRUCT-(int, error)
+.   .   NAME-fmt.Printf u(1) a(true) l(4) x(0) class(PFUNC) tc(1) used(true) FUNC-func(string, ...interface {}) (int, error)
+.   CALLFUNC-list
+.   .   AS u(1) l(8) tc(1)
+.   .   .   INDREGSP-SP a(true) l(8) x(0) tc(1) addrtaken fmt.format·3 string
+.   .   .   LITERAL-"Hello!" u(1) a(true) l(8) tc(1) string
+
+.   .   AS u(1) l(8) tc(1)
+.   .   .   INDREGSP-SP a(true) l(8) x(16) tc(1) addrtaken fmt.a·4 SLICE-[]interface {}
+.   .   .   LITERAL-nil u(1) a(true) l(8) SLICE-[]interface {}
+buildssa-exit
+compiling main
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v3 = SB <uintptr> DEAD
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    v11 = OffPtr <*int> [40] v2 DEAD
+    Ret v10
+  pass early phielim begin
+  pass early phielim end [993 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v3 = SB <uintptr> DEAD
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    v11 = OffPtr <*int> [40] v2 DEAD
+    Ret v10
+  pass early copyelim begin
+  pass early copyelim end [569 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v3 = SB <uintptr> DEAD
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    v11 = OffPtr <*int> [40] v2 DEAD
+    Ret v10
+  pass early deadcode begin
+  pass early deadcode end [5128 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass short circuit begin
+  pass short circuit end [7823 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    v11 = ConstBool <bool> [true] DEAD
+    v3 = ConstBool <bool> [false] DEAD
+    Ret v10
+  pass decompose user begin
+  pass decompose user end [994 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v4 = ConstString <string> {"Hello!"}
+    v5 = OffPtr <*string> [0] v2
+    v6 = Store <mem> [16] v5 v4 v1
+    v7 = ConstSlice <[]interface {}>
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    v11 = ConstBool <bool> [true] DEAD
+    v3 = ConstBool <bool> [false] DEAD
+    Ret v10
+  pass opt begin
+  pass opt end [41466 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v11 = ConstBool <bool> [true] DEAD
+    v3 = ConstBool <bool> [false] DEAD
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v17
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass zero arg cse begin
+  pass zero arg cse end [8820 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v11 = ConstBool <bool> [true] DEAD
+    v3 = ConstBool <bool> [false] DEAD
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = Const64 <int> [0] DEAD
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass opt deadcode begin
+  pass opt deadcode end [8462 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass generic cse begin
+  pass generic cse end [22896 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass phiopt begin
+  pass phiopt end [387 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass nilcheckelim begin
+  pass nilcheckelim end [1358 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass prove begin
+  pass prove end [9063 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass loopbce begin
+  pass loopbce end [1715 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass decompose builtin begin
+  pass decompose builtin end [476 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v7 = SliceMake <[]interface {}> v15 v16 v16
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v4 = StringMake <string> v12 v14
+    v6 = Store <mem> [16] v5 v4 v1
+    v9 = Store <mem> [24] v8 v7 v6
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass dec begin
+  pass dec end [11022 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v5
+    v11 = OffPtr <*int> [16] v8
+    v19 = OffPtr <*int> [8] v8
+    v7 = SliceMake <[]interface {}> v15 v16 v16 DEAD
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v4 = StringMake <string> v12 v14 DEAD
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass late opt begin
+  pass late opt end [5428 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v7 = SliceMake <[]interface {}> v15 v16 v16 DEAD
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v4 = StringMake <string> v12 v14 DEAD
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass generic deadcode begin
+  pass generic deadcode end [5866 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass check bce begin
+  pass check bce end [385 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass writebarrier begin
+  pass writebarrier end [748 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass fuse begin
+  pass fuse end [669 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass dse begin
+  pass dse end [8294 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass tighten begin
+  pass tighten end [9547 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v5 = OffPtr <*string> [0] v2
+    v8 = OffPtr <*[]interface {}> [16] v2
+    v13 = SB <uintptr>
+    v14 = Const64 <int> [6]
+    v15 = ConstNil <*interface {}>
+    v16 = Const64 <int> [0]
+    v17 = OffPtr <*int> [8] v2
+    v11 = OffPtr <*int> [32] v2
+    v19 = OffPtr <*int> [24] v2
+    v12 = Addr <*uint8> {go.string."Hello!"} v13
+    v3 = Store <mem> [8] v5 v12 v1
+    v6 = Store <mem> [8] v17 v14 v3
+    v20 = Store <mem> [8] v8 v15 v6
+    v18 = Store <mem> [8] v19 v16 v20
+    v9 = Store <mem> [8] v11 v16 v18
+    v10 = StaticCall <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass lower begin
+  pass lower end [41311 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v8 = ADDQconst <*[]interface {}> [16] v2 DEAD
+    v13 = SB <uintptr>
+    v14 = MOVQconst <int> [6] DEAD
+    v15 = MOVQconst <*interface {}> [0] DEAD
+    v16 = MOVQconst <int> [0] DEAD
+    v17 = ADDQconst <*int> [8] v2 DEAD
+    v11 = ADDQconst <*int> [32] v2 DEAD
+    v19 = ADDQconst <*int> [24] v2 DEAD
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass lowered cse begin
+  pass lowered cse end [12352 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v8 = ADDQconst <*[]interface {}> [16] v2 DEAD
+    v13 = SB <uintptr>
+    v14 = MOVQconst <int> [6] DEAD
+    v15 = MOVQconst <*interface {}> [0] DEAD
+    v16 = MOVQconst <int> [0] DEAD
+    v17 = ADDQconst <*int> [8] v2 DEAD
+    v11 = ADDQconst <*int> [32] v2 DEAD
+    v19 = ADDQconst <*int> [24] v2 DEAD
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass lowered deadcode begin
+  pass lowered deadcode end [4941 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass checkLower begin
+  pass checkLower end [544 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass late phielim begin
+  pass late phielim end [683 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass late copyelim begin
+  pass late copyelim end [471 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass phi tighten begin
+  pass phi tighten end [423 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass late deadcode begin
+  pass late deadcode end [2756 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass critical begin
+  pass critical end [706 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass likelyadjust begin
+  pass likelyadjust end [883 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass layout begin
+  pass layout end [2109 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass schedule begin
+  pass schedule end [12744 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass late nilcheck begin
+  pass late nilcheck end [1830 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass flagalloc begin
+  pass flagalloc end [3897 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr>
+    v13 = SB <uintptr>
+    v12 = LEAQ <*uint8> {go.string."Hello!"} v13
+    v3 = MOVQstore <mem> v2 v12 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass regalloc begin
+  pass regalloc end [44101 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr> : SP
+    v13 = SB <uintptr> : SB
+    v19 = LEAQ <*uint8> {go.string."Hello!"} v13 : AX
+    v3 = MOVQstore <mem> v2 v19 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass stackframe begin
+  pass stackframe end [3107 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr> : SP
+    v13 = SB <uintptr> : SB
+    v19 = LEAQ <*uint8> {go.string."Hello!"} v13 : AX
+    v3 = MOVQstore <mem> v2 v19 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+  pass trim begin
+  pass trim end [1123 ns]
+main <nil>
+  b1:
+    v1 = InitMem <mem>
+    v2 = SP <uintptr> : SP
+    v13 = SB <uintptr> : SB
+    v19 = LEAQ <*uint8> {go.string."Hello!"} v13 : AX
+    v3 = MOVQstore <mem> v2 v19 v1
+    v6 = MOVQstoreconst <mem> [val=6,off=8] v2 v3
+    v20 = MOVQstoreconst <mem> [val=0,off=16] v2 v6
+    v18 = MOVQstoreconst <mem> [val=0,off=24] v2 v20
+    v9 = MOVQstoreconst <mem> [val=0,off=32] v2 v18
+    v10 = CALLstatic <mem> {fmt.Printf} [64] v9
+    Ret v10
+genssa main
+   	00000 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:7)	TEXT	"".main(SB)
+   	00001 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:7)	FUNCDATA	$0, "".gcargs·0(SB)
+   	00002 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:7)	FUNCDATA	$1, "".gclocals·1(SB)
+v19	00003 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	LEAQ	go.string."Hello!"(SB), AX
+v3	00004 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	MOVQ	AX, (SP)
+v6	00005 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	MOVQ	$6, 8(SP)
+v20	00006 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	MOVQ	$0, 16(SP)
+v18	00007 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	MOVQ	$0, 24(SP)
+v9	00008 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	MOVQ	$0, 32(SP)
+v10	00009 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:8)	CALL	fmt.Printf(SB)
+b1	00010 (/home/sei0o/Documents/IR-Slide/samples/go/hello.go:9)	RET
+   	00011 (<unknown line number>)	END

@@ -78,6 +78,12 @@ section pre {
   word-break: break-all;
 }
 
+.wide code pre {
+  width: 100vw;
+  position: absolute;
+  left: -10vw;
+}
+
 .twocol code > pre {
   width: 50vw;
   white-space: pre-wrap;
