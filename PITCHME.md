@@ -359,6 +359,7 @@ public static void main();
 {name: "prove", fn: prove},
 ...
 ```
+
 ---
 
 ### 最適化の例: opt
@@ -486,27 +487,23 @@ func main() {
   - ARM
   - MIPS
 
----
-
 <!-- golang SSA BlockIf -->
 <!-- Func, Block(Preds, Succs), Value, OpGreaterなどの簡単な説明 -->
 
----
-
 <!-- opt: BlockFirstに変える -->
-
----
 
 <!-- deadcode: reachable blocksをDFSで求め、 Live valuesをなんとかして（調べる）見つける、
 
 - live values
   - Block.Control (Value) ならばlive
-    - // A value that determines how the block is exited. (block.go)
+    - Control: // A value that determines how the block is exited. (block.go)
   - Value.Opがcall / hasSideEffects ならばlive
   - Value.TypeがVoidならばlive ←　なぜ？
     - // The only Void ops are nil checks.  We must keep these.
     - nil checkはどこで生成される？（おそらくif val != nilのことではない)
-  - Value.Op == OpPhiのとき、すべてのArgs(Value型) = ブロックのPredsがun-reachableのとき、Valueを削除する
+  - Value.Op == OpPhiで、すべてのArgs(Value型) = ブロックのPredsがun-reachableのとき、Valueを削除する
+  
+  - Value.Argsにlive valueが含まれている場合そのvalueもliveになる
 
 dead codeの除去, transitive closureを求めるのにwarshall-floydが使える話 -->
 
@@ -732,8 +729,6 @@ call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pin
   - [静的単一代入最適化部](http://www.is.titech.ac.jp/~sassa/coins-www-ssa/japanese/)
     - なぜか東工大の文書がよく引っかかる
   - [Static Single Assignment for Decompilation](https://yurichev.com/mirrors/vanEmmerik_ssa.pdf)
-- Go
-  - []
 - JVM
   - [JVM performance optimization | JavaWorld](https://www.javaworld.com/article/2078623/core-java/jvm-performance-optimization-part-1-a-jvm-technology-primer.html)
 - LLVM
@@ -761,5 +756,5 @@ call swiftcc void @\_T0s5<span class="pink">print</span>yypd_SS9<span class="pin
 
 <!-- .slide: class="center" -->
 おしまい  
-- [ソースコードも読んで]()
+- [ソースコードも読んで](http://github.com/sei0o/IR-Slide)
   - Swiftはめっちゃ省いてます
